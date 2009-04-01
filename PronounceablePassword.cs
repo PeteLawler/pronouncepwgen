@@ -807,7 +807,7 @@ namespace PronouncePwGen
                             if (generated.Count > 1 && (prevdigram.Flags & DigramFlags.SUFFIX) > 0) unitflags |= UnitFlags.VOWEL;
                             if ((prevunit1.Flags & UnitFlags.VOWEL) == 0) digramnotflags |= DigramFlags.PREFIX;
 
-                            if ((prevunit1.Flags & UnitFlags.VOWEL) != 0 && (prevunit2.Flags & UnitFlags.VOWEL) != 0)
+                            if ((prevunit1.Flags & (UnitFlags.VOWEL | UnitFlags.ALTERNATE_VOWEL)) == UnitFlags.VOWEL && (prevunit2.Flags & (UnitFlags.VOWEL | UnitFlags.ALTERNATE_VOWEL)) == UnitFlags.VOWEL) 
                             { // no triple vowels please, pseudo-vowel y is ok however
                                 if (Digram.isValid(prevunit2, new Unit("y")) && ((unitnotflags & UnitFlags.VOWEL) > 0 | prng.Next(0, 35) == 0))
                                 {
