@@ -34,7 +34,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -51,7 +50,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\support\KeePass_090327_Src\KeePass\KeePass.csproj">
+    <ProjectReference Include="..\support\KeePass\KeePass\KeePass.csproj">
       <Project>{10938016-DEE2-4A25-9A5A-8FD3444379CA}</Project>
       <Name>KeePass</Name>
     </ProjectReference>

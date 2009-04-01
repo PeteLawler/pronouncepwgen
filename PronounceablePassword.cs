@@ -1,28 +1,31 @@
 /*
-    Password Generator Library
+    KeePass Pronounceable Password Generator Plugin
     Copyright (C) 2009 Jan Benjamin Engracia <jaybz.e@gmail.com>
     Based on FIPS-181 <http://www.itl.nist.gov/fipspubs/fip181.htm>
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or (at your option) any later version.
+    This file is part of KeePass Pronounceable Password Generator Plugin. 
+ 
+    KeePass Pronounceable Password Generator Plugin is free software:
+    you can redistribute it and/or modify it under the terms of the GNU
+    Lesser General Public License as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option) any
+    later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Leser General Public License for more details.
+    KeePass Pronounceable Password Generator Plugin is distributed in
+    the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+    even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+    PARTICULAR PURPOSE.  See the GNU Leser General Public License for
+    more details.
 
     You should have received a copy of the GNU Lesser General Public
-    License along with this program.  If not, see
-    <http://www.gnu.org/licenses/>.
+    License along with KeePass Pronounceable Password Generator Plugin.
+    If not, see <http://www.gnu.org/licenses/>.
 */
 
 using System;
 using System.Collections;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Xml;
 
 namespace PronouncePwGen
@@ -60,10 +63,6 @@ namespace PronouncePwGen
     /// </summary>
     public class PronounceablePassword
     {
-        public static ArrayList genunits = new ArrayList();
-        public static ArrayList genints = new ArrayList();
-        //public static Queue genqueue = new Queue(new int[] { 3, 19, 15, 0, 16, 21, 8, 20, 19, 19 });
-
         #region Private property flags
         /// <summary>
         /// Unit property flags.
@@ -137,11 +136,7 @@ namespace PronouncePwGen
             /// </summary>
             public Digit(PRNG prng)
             {
-                int gen = prng.Next(0, 10);
-                //if (genqueue.Count > 0) gen = (int)genqueue.Dequeue();
-                genints.Add(gen);
-                Text = gen.ToString();
-                PronounceablePassword.genunits.Add(Text);
+                Text = prng.Next(0, 10).ToString();
                 Flags = UnitFlags.IS_A_DIGIT;
             }
 
@@ -271,20 +266,13 @@ namespace PronouncePwGen
                     }
 
                     if (candidates.Count == 0) throw new Exception("No units were found fitting given criteria.");
-                    int gen = prng.Next(0, candidates.Count);
-                    //if (genqueue.Count > 0) gen = (int)genqueue.Dequeue();
-                    genints.Add(gen);
-                    randomunit = (XmlNode)candidates[gen];
+                    randomunit = (XmlNode)candidates[prng.Next(0, candidates.Count)];
                 }
                 else
                 {
-                    int gen = prng.Next(0, UnitsData["units"].ChildNodes.Count);
-                    //if (genqueue.Count > 0) gen = (int)genqueue.Dequeue();
-                    genints.Add(gen);
-                    randomunit = UnitsData["units"].ChildNodes[gen];
+                    randomunit = UnitsData["units"].ChildNodes[prng.Next(0, UnitsData["units"].ChildNodes.Count)];
                 }
                 Text = randomunit.Attributes["text"].Value;
-                PronounceablePassword.genunits.Add(Text);
                 int randomunitflags;
                 if (int.TryParse(randomunit.InnerText, out randomunitflags)) Flags = (UnitFlags)randomunitflags;
                 else throw new Exception("Generation of random unit failed due to data inconsistencies!");
@@ -480,17 +468,11 @@ namespace PronouncePwGen
                     }
 
                     if (candidateunits.Count == 0) throw new ArgumentException("No units were found fitting given criteria.");
-                    int gen = prng.Next(0, candidateunits.Count);
-                    //if (genqueue.Count > 0) gen = (int)genqueue.Dequeue();
-                    genints.Add(gen);
-                    randomunit = (XmlNode)candidateunits[gen];
+                    randomunit = (XmlNode)candidateunits[prng.Next(0, candidateunits.Count)];
                 }
                 else
                 {
-                    int gen = prng.Next(0, candidates.ChildNodes.Count);
-                    //if (genqueue.Count > 0) gen = (int)genqueue.Dequeue();
-                    genints.Add(gen);
-                    randomunit = candidates.ChildNodes[gen];
+                    randomunit = candidates.ChildNodes[prng.Next(0, candidates.ChildNodes.Count)];
                 }
 
 
@@ -505,7 +487,6 @@ namespace PronouncePwGen
                 int randomdigramflags;
                 if (int.TryParse(randomunit.InnerText, out randomdigramflags)) Flags = (DigramFlags)randomdigramflags;
                 else throw new Exception("Generation of random unit failed due to data inconsistencies!");
-                PronounceablePassword.genunits.Add(SecondUnit.Text);
             }
 
             /// <summary>
@@ -726,7 +707,7 @@ namespace PronouncePwGen
             /// <param name="prevunit1">The first unit preceeding this syllable.</param>
             /// <param name="prevunit2">The second unit preceeding this syllable.</param>
             /// <returns>The randomly generated syllable.</returns>
-            public static Syllable PRNG(PRNG prng, Unit prevunit1, Unit prevunit2, ref Syllable leftovers)
+            public static Syllable Random(PRNG prng, Unit prevunit1, Unit prevunit2, ref Syllable leftovers)
             {
                 // Complex rules implemented here.  This function needs to be documented further.
                 Syllable generated;
@@ -804,10 +785,7 @@ namespace PronouncePwGen
                         {
                             if (!generated.HasVowel)
                             {
-                                int gen = prng.Next(0, 35);
-                                //if (genqueue.Count > 0) gen = (int)genqueue.Dequeue();
-                                genints.Add(gen);
-                                if (gen < 6)
+                                if (prng.Next(0, 35) < 6) // 6 "vowels" out of 36 possible units, and no, we won't follow standard vowel distribution to strengthen generator against statistical attacks
                                 {
                                     digramnotflags |= DigramFlags.BREAK;
                                     digramnotflags |= DigramFlags.BEGIN;
@@ -830,11 +808,8 @@ namespace PronouncePwGen
                             if ((prevunit1.Flags & UnitFlags.VOWEL) == 0) digramnotflags |= DigramFlags.PREFIX;
 
                             if ((prevunit1.Flags & UnitFlags.VOWEL) != 0 && (prevunit2.Flags & UnitFlags.VOWEL) != 0)
-                            { // no triple vowels
-                                int gen = prng.Next(0, 35);
-                                //if (genqueue.Count > 0) gen = (int)genqueue.Dequeue();
-                                genints.Add(gen);
-                                if (Digram.isValid(prevunit2, new Unit("y")) && ((unitnotflags & UnitFlags.VOWEL) > 0 | gen == 0))
+                            { // no triple vowels please, pseudo-vowel y is ok however
+                                if (Digram.isValid(prevunit2, new Unit("y")) && ((unitnotflags & UnitFlags.VOWEL) > 0 | prng.Next(0, 35) == 0))
                                 {
                                     unitflags |= UnitFlags.ALTERNATE_VOWEL;
                                 }
@@ -910,7 +885,7 @@ namespace PronouncePwGen
                                 {
                                     nextunit = null;
                                 }
-                                else
+                                else if (generated.Count > 0)
                                 {
                                     leftovers = new Syllable(nextunit);
                                     break;
@@ -1012,7 +987,7 @@ namespace PronouncePwGen
                     string text = "";
                     foreach (Syllable syllable in _syllables)
                     {
-                        if (syllable.Text.Length == 0) continue;
+                        //if (syllable.Text.Length == 0) continue;
                         text += syllable.Text.Substring(0, 1).ToUpper() + syllable.Text.Substring(1, syllable.Text.Length - 1);
                     }
                     return text;
@@ -1082,9 +1057,6 @@ namespace PronouncePwGen
         public static string Generate(KeePassLib.Cryptography.CryptoRandomStream stream, int minlength, bool digits, CaseMode mode)
         {
             PRNG prng = new PRNG(stream);
-            // debug code needs to be cleared
-            genunits.Clear();
-            genints.Clear();
             Word randomword = new Word();
 
             if (digits) minlength--;
@@ -1095,10 +1067,7 @@ namespace PronouncePwGen
             Syllable prevsyllable = null;
             while (randomword.Text.Length < minlength)
             {
-                int gen = prng.Next(0, minlength - randomword.Text.Length);
-                //if (genqueue.Count > 0) gen = (int)genqueue.Dequeue();
-                genints.Add(gen);
-                if (randomword.Text.Length > 0 && digits && (gen != 0)) randomword.Add(new Syllable(new Digit(prng)));
+                if (randomword.Text.Length > 0 && digits && (prng.Next(0, minlength - randomword.Text.Length) != 0)) randomword.Add(new Syllable(new Digit(prng)));
                 Unit prevunit1 = null;
                 Unit prevunit2 = null;
                 if (prevsyllable != null && prevsyllable.Count > 0)
@@ -1106,7 +1075,7 @@ namespace PronouncePwGen
                     prevunit2 = prevsyllable[prevsyllable.Count - 1];
                     if (prevsyllable.Count > 1) prevunit1 = prevsyllable[prevsyllable.Count - 2];
                 }
-                Syllable newsyllable = Syllable.PRNG(prng, prevunit1, prevunit2, ref leftovers);
+                Syllable newsyllable = Syllable.Random(prng, prevunit1, prevunit2, ref leftovers);
                 prevsyllable = newsyllable;
                 randomword.Add(newsyllable);
             }
