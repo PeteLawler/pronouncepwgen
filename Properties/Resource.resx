@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,16 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="textBox1.Text" xml:space="preserve">
-    <value>The upper and lower case options are weakest but easiest to remember passwords.
-
-The randomize case option generates the strongest but hardest to remember passwords.
-
-Capitalizing the first letter of each syllable generate passwords almost as strong as a randomized case password but at the same time is almost as easy to remember as lower or upper case passwords.</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="B16x16_KGPG_Gen" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Nuvola\B16x16_KGPG_Gen.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="textBox2.Text" xml:space="preserve">
-    <value>The plugin will always generate passwords at least as long as the specified minimum length. It will stop adding syllables as soon as it reaches or exceeds the minimum length.
-
-When the Use Digits option is checked, the plugin includes digits in between syllables and at the end of the password only.  This minimizes the impact of digits on memorizeability.</value>
+  <data name="B22x22_KGPG_Info" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Nuvola\B22x22_KGPG_Info.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="B48x48_KGPG_Info" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Nuvola\B48x48_KGPG_Info.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

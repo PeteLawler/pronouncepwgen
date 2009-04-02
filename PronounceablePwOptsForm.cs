@@ -25,6 +25,9 @@
 using System;
 using System.Windows.Forms;
 
+using KeePass.Resources;
+using KeePass.UI;
+
 namespace PronouncePwGen
 {
     public partial class PronounceablePwOptsForm : Form
@@ -32,6 +35,11 @@ namespace PronouncePwGen
         public PronounceablePwOptsForm()
         {
             InitializeComponent();
+        }
+
+        private void PronounceablePwOptsForm_Load(object sender, EventArgs e)
+        {
+            pbBannerImage.Image = BannerFactory.CreateBanner(pbBannerImage.Width, pbBannerImage.Height, BannerStyle.Default, Properties.Resource.B48x48_KGPG_Info, KPRes.Options, string.Empty);
         }
 
         public ProunouncePwGenProfile GetOptions(ProunouncePwGenProfile defaults)

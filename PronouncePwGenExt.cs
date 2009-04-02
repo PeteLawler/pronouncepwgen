@@ -181,5 +181,13 @@ namespace PronouncePwGen
             m_host.PwGeneratorPool.Remove(m_ppgGenerator.Uuid);
             m_ppgGenerator = null;
         }
+
+        public override System.Drawing.Image SmallIcon
+        {
+            get
+            {
+                return Properties.Resource.B16x16_KGPG_Gen;
+            }
+        }
     }
 }

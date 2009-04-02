@@ -27,12 +27,11 @@ should appear in the custom algorithm drop down box.  Just select it and click
 on the options button beside the drop down box if you wish to change the
 password generation settings.
 
-NOTES
+CREDITS
 
-The plugin will always generate passwords at least as long as the specified
-minimum length.  It will stop adding syllables as soon as it reaches or exceeds
-the minimum length.
+Many thanks to Dominik Reichl for creating KeePass Password Safe, without which,
+this plugin would not exist.
 
-When the Use Digits option is checked, the plugin includes digits in between
-syllables and at the end of the password only.  This allows the digits to be
-added without decreasing the memorizability of the password too much.
+I would also like to extend my thanks to the creator of the "Nuvola" icon set,
+David Vignioni.  For more information, please refer to the included original
+readme and license.
