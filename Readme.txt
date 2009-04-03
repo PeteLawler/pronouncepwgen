@@ -11,9 +11,8 @@ either project will be reflected on both.  You can find pwgenlib.net here:
 
 REQUIREMENTS
 
-As of this writing, the version required for this plugin to work has not yet
-been released, however, this plugin should work with any version later than
-2.07b.
+This is a pre-release version of the plugin and requires a pre-release version
+of KeePass.
 
 INSTALLING
 
