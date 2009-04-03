@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="textBox1.Text" xml:space="preserve">
-    <value>The upper and lower case options generate the weaker but easier to remember passwords.
+    <value>The upper and lower case options generate weaker but easier to remember passwords.
 
-The randomize case option generates the stronger but harder to remember passwords.
+The randomize case option generates stronger but harder to remember passwords.
 
 Capitalizing the first letter of each syllable generate passwords almost as strong as a randomized case password but at the same time is almost as easy to remember as lower or upper case passwords.</value>
   </data>
