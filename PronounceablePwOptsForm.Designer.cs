@@ -39,8 +39,8 @@
             this.cbDigits = new System.Windows.Forms.CheckBox();
             this.tcOptions = new System.Windows.Forms.TabControl();
             this.tpPwCase = new System.Windows.Forms.TabPage();
-            this.tpPwOptions = new System.Windows.Forms.TabPage();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.tpPwOptions = new System.Windows.Forms.TabPage();
             this.textBox2 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pbBannerImage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudLength)).BeginInit();
@@ -153,6 +153,20 @@
             this.tpPwCase.Text = "Password Case";
             this.tpPwCase.UseVisualStyleBackColor = true;
             // 
+            // textBox1
+            // 
+            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBox1.Location = new System.Drawing.Point(6, 33);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(211, 156);
+            this.textBox1.TabIndex = 15;
+            this.textBox1.Text = resources.GetString("textBox1.Text");
+            // 
             // tpPwOptions
             // 
             this.tpPwOptions.Controls.Add(this.textBox2);
@@ -167,20 +181,6 @@
             this.tpPwOptions.TabIndex = 1;
             this.tpPwOptions.Text = "Other Options";
             this.tpPwOptions.UseVisualStyleBackColor = true;
-            // 
-            // textBox1
-            // 
-            this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.Location = new System.Drawing.Point(6, 33);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(211, 156);
-            this.textBox1.TabIndex = 15;
-            this.textBox1.Text = resources.GetString("textBox1.Text");
             // 
             // textBox2
             // 
