@@ -11,8 +11,7 @@ either project will be reflected on both.  You can find pwgenlib.net here:
 
 REQUIREMENTS
 
-This is a pre-release version of the plugin and requires a pre-release version
-of KeePass.
+This plugin requires KeePass 2.08 available at <http://keepass.info/>.
 
 INSTALLING
 
@@ -26,11 +25,23 @@ should appear in the custom algorithm drop down box.  Just select it and click
 on the options button beside the drop down box if you wish to change the
 password generation settings.
 
+CHANGES SINCE v1.0.2
+
+There were no code changes since version v1.0.2. The v1.0.3 binary is merely
+v1.0.2 recompiled for KeePass 2.08. The previous binary worked only for a test
+version of KeePass.  Only the Readme.txt file (this file) was changed with a
+few minor changes, most of which is due to the KeePass 2.08 release.
+
 CREDITS
 
 Many thanks to Dominik Reichl for creating KeePass Password Safe, without which,
-this plugin would not exist.
+this plugin would not exist and my life would have been much more difficult.
 
 I would also like to extend my thanks to the creator of the "Nuvola" icon set,
 David Vignioni.  For more information, please refer to the included original
 readme and license.
+
+SUPPORT
+
+Questions should go to the SourceForge forum for KeePass Pronounceable Password
+Generator Plugin.
