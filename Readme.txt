@@ -15,7 +15,7 @@ This plugin requires KeePass 2.08 available at <http://keepass.info/>.
 
 INSTALLING
 
-Just copy PronouncePwGen.dll to the same directory where KeePass.exe is located
+Just copy PronouncePwGen.plgx to the same directory where KeePass.exe is located
 and KeePass should automatically recognize and load the plugin.
 
 USAGE
