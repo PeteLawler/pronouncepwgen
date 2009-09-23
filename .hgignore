@@ -1,2 +1,4 @@
 glob:obj/*
 glob:KeePass.exe
+glob:PronouncePwGen.plgx
+glob:Build/*
