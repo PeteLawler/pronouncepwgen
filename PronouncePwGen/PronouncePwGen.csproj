@@ -27,7 +27,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\Build\Release\</OutputPath>
+    <OutputPath>..\Build\Release\DLL\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -36,6 +36,7 @@
     <Reference Include="KeePass, Version=2.0.9.24797, Culture=neutral, PublicKeyToken=fed2ed7716aecf5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\KeePass.exe</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
@@ -100,4 +101,19 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>echo POSTBUILDSTEP for $(ProjectName)
+
+set PLGXDIR=$(SolutionDir)
+if “%25PLGXDIR:~-1%25”==”\” set PLGXDIR=%25PLGXDIR:~0,-1%25
+
+rmdir /s /q ..\PLGX
+mkdir ..\PLGX
+copy /y *.txt ..\PLGX\
+move /y "$(SolutionDir)obj" ..\
+..\..\..\..\KeePass.exe --plgx-create "%25PLGXDIR%25"
+move /y ../obj "$(SolutionDir)"
+move /y "..\..\..\$(ProjectName).plgx" ..\PLGX\
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>
