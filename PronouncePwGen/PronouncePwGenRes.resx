@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,30 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="textBox1.Text" xml:space="preserve">
-    <value>The upper and lower case options generate weaker but easier to remember passwords.
-
-The randomize case option generates stronger but harder to remember passwords.
-
-Capitalizing the first letter of syllables generate passwords almost as strong as a randomized case password but at the same time is almost as easy to remember as lower or upper case passwords.</value>
+  <data name="FormTitle" xml:space="preserve">
+    <value>Pronounceable Password Options</value>
   </data>
-  <data name="textBox4.Text" xml:space="preserve">
-    <value>The upper and lower case options generate weaker but easier to remember passwords.
-
-The randomize case option generates stronger but harder to remember passwords.
-
-Capitalizing the first letter of syllables generate passwords almost as strong as a randomized case password but at the same time is almost as easy to remember as lower or upper case passwords.</value>
+  <data name="HeaderText" xml:space="preserve">
+    <value>Generation Options</value>
   </data>
-  <data name="textBox2.Text" xml:space="preserve">
-    <value>The plugin will always generate passwords at least as long as the specified minimum length. It will stop adding syllables as soon as it reaches or exceeds the minimum length.
-
-When the Use Digits option is checked and/or if symbols are placed in the Use Symbols text box, the plugin includes digits and/or the chosen symbols in between syllables and at the end of the password only.  This minimizes the impact of digits on memorizeability.</value>
+  <data name="HeaderText2" xml:space="preserve">
+    <value />
   </data>
-  <data name="textBox5.Text" xml:space="preserve">
-    <value>The upper and lower case options generate weaker but easier to remember passwords.
-
-The randomize case option generates stronger but harder to remember passwords.
-
-Capitalizing the first letter of syllables generate passwords almost as strong as a randomized case password but at the same time is almost as easy to remember as lower or upper case passwords.</value>
+  <data name="PluginName" xml:space="preserve">
+    <value>Pronounceable Password Generator (FIPS181 based)</value>
+  </data>
+  <data name="UUID" xml:space="preserve">
+    <value>075898AA-36E4-4BAE-BF74-3EF30C0AD446</value>
   </data>
 </root>

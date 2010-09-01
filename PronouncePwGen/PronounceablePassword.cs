@@ -30,12 +30,20 @@ using System.Xml;
 
 namespace PronouncePwGen
 {
+    public enum CharacterSubstitutionMode
+    {
+        NoSubstitution = 0,
+        RandomSubstitution = 1,
+        SubstituteAll = 2
+    }
+
     public enum CaseMode
     {
         LowerCase = 0,
         UpperCase = 1,
         MixedCase = 2,
-        RandomCase = 3
+        RandomCase = 3,
+        RandomMixedCase = 4
     }
 
     public class PRNG
@@ -443,7 +451,7 @@ namespace PronouncePwGen
                 if (candidates == null || candidates.ChildNodes.Count == 0) throw new Exception(FirstUnit.Text + " does not start any valid digram.");
 
                 XmlNode randomunit;
-                if (flags > 0 || notflags > 0)
+                if (flags > 0 || notflags > 0 || unitflags > 0 || unitnotflags > 0)
                 {
                     ArrayList candidateunits = new ArrayList();
                     foreach (XmlNode node in candidates.ChildNodes)
@@ -709,6 +717,18 @@ namespace PronouncePwGen
             /// <returns>The randomly generated syllable.</returns>
             public static Syllable Random(PRNG prng, Unit prevunit1, Unit prevunit2, ref Syllable leftovers)
             {
+                return Random(prng, prevunit1, prevunit2, ref leftovers, false);
+            }
+
+            /// <summary>
+            /// Generates a random syllable.
+            /// </summary>
+            /// <param name="prevunit1">The first unit preceeding this syllable.</param>
+            /// <param name="prevunit2">The second unit preceeding this syllable.</param>
+            /// <param name="morepronounceable">Toggles generation of syllables that make the word more pronounceable.</param>
+            /// <returns>The randomly generated syllable.</returns>
+            public static Syllable Random(PRNG prng, Unit prevunit1, Unit prevunit2, ref Syllable leftovers, bool morepronounceable)
+            {
                 // Complex rules implemented here.  This function needs to be documented further.
                 Syllable generated;
                 if (leftovers == null) generated = new Syllable();
@@ -819,7 +839,11 @@ namespace PronouncePwGen
                                 }
                             }
 
-                            if ((prevunit1.Flags & UnitFlags.VOWEL) == 0 && (prevunit2.Flags & UnitFlags.VOWEL) == 0)
+                            if (morepronounceable && (prevunit2.Flags & UnitFlags.VOWEL) == 0)
+                            { // no double consonants
+                                unitflags |= UnitFlags.VOWEL;
+                            }
+                            else if ((prevunit1.Flags & UnitFlags.VOWEL) == 0 && (prevunit2.Flags & UnitFlags.VOWEL) == 0)
                             { // no triple consonants
                                 unitflags |= UnitFlags.VOWEL;
                             }
@@ -987,11 +1011,24 @@ namespace PronouncePwGen
                     string text = "";
                     foreach (Syllable syllable in _syllables)
                     {
-                        //if (syllable.Text.Length == 0) continue;
                         text += syllable.Text.Substring(0, 1).ToUpper() + syllable.Text.Substring(1, syllable.Text.Length - 1);
                     }
                     return text;
                 }
+            }
+
+            public string UpperCaseSyllableStartTextRandomize(PRNG prng)
+            {
+                string text = "";
+                foreach (Syllable syllable in _syllables)
+                {
+                    //if (syllable.Text.Length == 0) continue;
+                    if (prng.Next(2) > 0)
+                        text += syllable.Text.Substring(0, 1).ToUpper() + syllable.Text.Substring(1, syllable.Text.Length - 1);
+                    else
+                        text += syllable.Text;
+                }
+                return text;
             }
 
             public string HyphenedText
@@ -1054,12 +1091,18 @@ namespace PronouncePwGen
         #endregion
 
         #region Generator functions
-        public static string Generate(KeePassLib.Cryptography.CryptoRandomStream stream, int minlength, bool digits, CaseMode mode)
+        public static string Generate(KeePassLib.Cryptography.CryptoRandomStream stream, int minlength, bool digits, CaseMode mode, bool morepronounceable)
         {
+            bool hyphened = false; // not implemented here
+
             PRNG prng = new PRNG(stream);
             Word randomword = new Word();
 
-            if (digits) minlength--;
+            if (digits)
+            {
+                minlength--;
+                hyphened = false;
+            }
 
             string generated = "";
 
@@ -1075,7 +1118,7 @@ namespace PronouncePwGen
                     prevunit2 = prevsyllable[prevsyllable.Count - 1];
                     if (prevsyllable.Count > 1) prevunit1 = prevsyllable[prevsyllable.Count - 2];
                 }
-                Syllable newsyllable = Syllable.Random(prng, prevunit1, prevunit2, ref leftovers);
+                Syllable newsyllable = Syllable.Random(prng, prevunit1, prevunit2, ref leftovers, morepronounceable);
                 prevsyllable = newsyllable;
                 randomword.Add(newsyllable);
             }
@@ -1095,8 +1138,11 @@ namespace PronouncePwGen
                         generated += prng.Next(2) > 0 ? ch.ToString().ToUpper() : ch.ToString();
                     }
                     break;
+                case CaseMode.RandomMixedCase:
+                    generated = randomword.UpperCaseSyllableStartTextRandomize(prng);
+                    break;
                 default:
-                    generated = randomword.Text;
+                    generated = hyphened ? randomword.HyphenedText : randomword.Text;
                     break;
             }
 

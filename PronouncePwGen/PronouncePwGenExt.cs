@@ -34,6 +34,9 @@ namespace PronouncePwGen
 {
     public class ProunouncePwGenProfile
     {
+        private static string version = "2";
+        private static string separator = "|";
+
         private bool digits = true;
         public bool UseDigits
         {
@@ -55,36 +58,102 @@ namespace PronouncePwGen
             set { mode = value; }
         }
 
+        private bool morepronounceable = false;
+        public bool MorePronounceable
+        {
+            get { return morepronounceable; }
+            set { morepronounceable = value; }
+        }
+
+        private string symbols = "!@#$%^&*()_+[]{}~`;:,./?<>'\"\\|"; // all typeable characters on a standard 101-key keyboard
+        public string UseSymbols
+        {
+            get { return symbols; }
+            set { symbols = value; }
+        }
+
+        private CharacterSubstitutionMode submode = CharacterSubstitutionMode.NoSubstitution;
+        public CharacterSubstitutionMode SubstitutionMode
+        {
+            get { return submode; }
+            set { submode = value; }
+        }
+
+        private string subscheme = "";
+        public string SubstitutionScheme
+        {
+            get { return subscheme; }
+            set { subscheme = value; }
+        }
+
         public ProunouncePwGenProfile() { }
 
         public ProunouncePwGenProfile(string optionstr)
         {
             if (optionstr.Length > 2)
             {
-                bool newdigits;
-                int newlen;
-                CaseMode newmode;
-
                 try
                 {
-                    string modestr = optionstr.Substring(0, 1);
-                    string digitstr = optionstr.Substring(1, 1);
-                    string lenstr = optionstr.Substring(2);
+                    string modestr = "";
+                    string digitstr = "";
+                    string lenstr = "";
 
-                    newlen = int.Parse(lenstr);
+                    string morestr = "";
+                    string symbolstr = "";
+                    string substr = "";
+
+                    if (optionstr.IndexOf(separator) == -1 && optionstr.Length >= 3) // v1 option format
+                    {
+                        modestr = optionstr.Substring(0, 1);
+                        digitstr = optionstr.Substring(1, 1);
+                        //lenstr = optionstr.Substring(2); // no longer load the length from v1 options
+                    }
+                    else // new format
+                    {
+                        int optioncount;
+                        if (optionstr.Split(separator.ToCharArray(), 2)[0] == "2") // v2 option format, 
+                        {
+                            optioncount = optionstr.Split(separator.ToCharArray()).Length;
+                            if (optioncount >= 8) optioncount = 8; // number of options for v2 format
+                            else throw new ApplicationException();
+                        }
+                        else throw new ApplicationException();
+
+                        string[] opts = optionstr.Split(separator.ToCharArray(), optioncount);
+
+                        if (optioncount >= 8) // at least 8 (not including version number) available options for v2 format and above
+                        {
+                            modestr = opts[1];
+                            digitstr = opts[2];
+                            lenstr = opts[3];
+                            morestr = opts[4];
+                            substr = opts[5];
+                            subscheme = opts[6];
+                        }
+
+                        if (opts[optioncount - 1].Length > 0) symbolstr = opts[optioncount - 1];
+                    }
+
+                    if (lenstr.Length > 0) minlength = int.Parse(lenstr);
+
                     switch (modestr)
                     {
+                        case "": // leave as default
+                            break;
                         case "0":
-                            newmode = CaseMode.LowerCase;
+                            mode = CaseMode.LowerCase;
                             break;
                         case "1":
-                            newmode = CaseMode.UpperCase;
+                            mode = CaseMode.UpperCase;
                             break;
                         case "2":
-                            newmode = CaseMode.MixedCase;
+                            mode = CaseMode.MixedCase;
                             break;
                         case "3":
-                            newmode = CaseMode.RandomCase;
+                            mode = CaseMode.RandomCase;
+                            break;
+                        case "4":
+                            mode = CaseMode.RandomMixedCase;
                             break;
                         default:
                             throw new ApplicationException();
@@ -92,19 +161,50 @@ namespace PronouncePwGen
 
                     switch (digitstr)
                     {
+                        case "": // leave as default
+                            break;
                         case "0":
-                            newdigits = false;
+                            digits = false;
                             break;
                         case "1":
-                            newdigits = true;
+                            digits = true;
                             break;
                         default:
                             throw new ApplicationException();
                     }
 
-                    digits = newdigits;
-                    mode = newmode;
-                    minlength = newlen;
+                    switch (morestr)
+                    {
+                        case "": // leave as default
+                            break;
+                        case "0":
+                            morepronounceable = false;
+                            break;
+                        case "1":
+                            morepronounceable = true;
+                            break;
+                        default:
+                            throw new ApplicationException();
+                    }
+
+                    symbols = symbolstr;
+
+                    switch (substr)
+                    {
+                        case "": // leave as default
+                            break;
+                        case "0":
+                            submode = CharacterSubstitutionMode.NoSubstitution;
+                            break;
+                        case "1":
+                            submode = CharacterSubstitutionMode.RandomSubstitution;
+                            break;
+                        case "3":
+                            submode = CharacterSubstitutionMode.SubstituteAll;
+                            break;
+                        default:
+                            throw new ApplicationException();
+                    }
                 }
                 catch (ApplicationException) { }
                 catch (ArgumentOutOfRangeException) { }
@@ -113,12 +213,24 @@ namespace PronouncePwGen
                 catch (OverflowException) { }
             }
         }
+
+        public override string ToString()
+        { // v2 format now implemented in ToString()
+            return version + separator
+                 + ((int)CaseMode).ToString() + separator
+                 + (UseDigits ? "1" : "0") + separator
+                 + MinimumLength.ToString() + separator
+                 + (MorePronounceable ? "1" : "0") + separator
+                 + ((int)SubstitutionMode).ToString() + separator
+                 + SubstitutionScheme + separator
+                 + UseSymbols;
+        }
     }
 
     public class PronounceablePwGenerator : CustomPwGenerator
     {
-        private string m_strUuid = "075898AA-36E4-4BAE-BF74-3EF30C0AD446";
-        private string m_strName = "Pronounceable Password Generator (FIPS181 based)";
+        private string m_strUuid = PronouncePwGenRes.UUID;
+        private string m_strName = PronouncePwGenRes.PluginName;
 
         public override PwUuid Uuid
         {
@@ -143,7 +255,8 @@ namespace PronouncePwGen
             profile = optsform.GetOptions(profile);
             optsform.Dispose();
 
-            return ((int)profile.CaseMode).ToString() + (profile.UseDigits ? "1" : "0") + profile.MinimumLength.ToString();
+            //return ((int)profile.CaseMode).ToString() + (profile.UseDigits ? "1" : "0") + profile.MinimumLength.ToString(); // v1 format
+            return profile.ToString(); // v2 format
         }
 
         public override KeePassLib.Security.ProtectedString Generate(PwProfile prf, KeePassLib.Cryptography.CryptoRandomStream crsRandomSource)
@@ -152,7 +265,7 @@ namespace PronouncePwGen
             string gen = "";
             try
             {
-                gen = PronounceablePassword.Generate(crsRandomSource, profile.MinimumLength, profile.UseDigits, profile.CaseMode);
+                gen = PronounceablePassword.Generate(crsRandomSource, profile.MinimumLength, profile.UseDigits, profile.CaseMode, profile.MorePronounceable);
             }
             catch (DivideByZeroException) { }
             return new KeePassLib.Security.ProtectedString(false, gen);

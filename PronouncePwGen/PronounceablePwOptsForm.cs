@@ -23,10 +23,12 @@
 */
 
 using System;
+using System.IO;
 using System.Windows.Forms;
 
 using KeePass.Resources;
 using KeePass.UI;
+using System.Reflection;
 
 namespace PronouncePwGen
 {
@@ -34,28 +36,44 @@ namespace PronouncePwGen
     {
         public PronounceablePwOptsForm()
         {
+            this.Text = PronouncePwGenRes.FormTitle;
             InitializeComponent();
         }
 
         private void PronounceablePwOptsForm_Load(object sender, EventArgs e)
         {
-            pbBannerImage.Image = BannerFactory.CreateBanner(pbBannerImage.Width, pbBannerImage.Height, BannerStyle.Default, Properties.Resource.B48x48_KGPG_Info, KPRes.Options, string.Empty);
+            pbBannerImage.Image = BannerFactory.CreateBanner(pbBannerImage.Width, pbBannerImage.Height, BannerStyle.Default, Properties.Resource.B48x48_KGPG_Info, PronouncePwGenRes.HeaderText, PronouncePwGenRes.HeaderText2);
         }
 
         public ProunouncePwGenProfile GetOptions(ProunouncePwGenProfile defaults)
         {
-            nudLength.Value = 0;
-            cbDigits.Checked = false;
-            cmbMode.SelectedIndex = 0;
-            nudLength.Value = defaults.MinimumLength;
-            cbDigits.Checked = defaults.UseDigits;
+            cbMoreProunounceable.Checked = defaults.MorePronounceable;
             cmbMode.SelectedIndex = (int)defaults.CaseMode;
+            cbDigits.Checked = defaults.UseDigits;
+            tbSymbols.Text = defaults.UseSymbols;
+            nudLength.Value = defaults.MinimumLength;
+            cmbSubsMode.SelectedIndex = (int)defaults.SubstitutionMode;
+            cmbSubsScheme.Items.Clear();
+            cmbSubsScheme.Items.Add("No substitution");
+            cmbSubsScheme.SelectedIndex = 0;
+            DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory());
+            FileInfo[] fis = di.GetFiles("*.ppgsub", SearchOption.AllDirectories);
+            foreach (FileInfo fi in fis)
+            {
+                int i = cmbSubsScheme.Items.Add(fi.Name);
+                if (fi.Name == defaults.SubstitutionScheme) cmbSubsScheme.SelectedIndex = i;
+            }
             if (this.ShowDialog() != DialogResult.OK) return defaults;
 
             ProunouncePwGenProfile profile = new ProunouncePwGenProfile();
+            profile.MorePronounceable = cbMoreProunounceable.Checked;
             profile.CaseMode = (CaseMode)cmbMode.SelectedIndex;
+            profile.SubstitutionMode = (CharacterSubstitutionMode)cmbSubsMode.SelectedIndex;
             profile.UseDigits = cbDigits.Checked;
+            profile.UseSymbols = tbSymbols.Text;
             profile.MinimumLength = (int)nudLength.Value;
+            profile.SubstitutionScheme = cmbSubsScheme.SelectedIndex > 0 ? (string)cmbSubsScheme.SelectedItem.ToString() : "";
+
             return profile;
         }
 
