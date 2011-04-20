@@ -27,7 +27,7 @@ password generation settings.
 
 SUBSTITUTION SCHEMES
 
-Substituiton schemes are defined by creating text files in the KeePass directory
+Substituiton schemes are defined by creating text files in <path to keepass>\ppgusb
 using an extension of .ppgsub.  Each substitution rule is defined like this:
 
 <character to replace>=<replacement text>
