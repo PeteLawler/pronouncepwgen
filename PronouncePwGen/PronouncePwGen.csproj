@@ -105,13 +105,13 @@
       <Link>Readme.txt</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <None Include="Symbol 1337 Substitution.ppgsub">
+    <None Include="ppgsub\Symbol 1337 Substitution.ppgsub">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Symbol Look-alike Substitution.ppgsub">
+    <None Include="ppgsub\Symbol Look-alike Substitution.ppgsub">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Numeric only l337 Substitution.ppgsub">
+    <None Include="ppgsub\Numeric only l337 Substitution.ppgsub">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
@@ -131,9 +131,9 @@ if “%25PLGXDIR:~-1%25”==”\” set PLGXDIR=%25PLGXDIR:~0,-1%25
 
 rmdir /s /q ..\PLGX
 mkdir ..\PLGX
-copy /y *.txt ..\PLGX\
-copy /y *.ppgsub ..\PLGX\
-copy /y KeePass.exe ..\PLGX\
+xcopy /y *.txt ..\PLGX\
+xcopy /y ppgsub ..\PLGX\ppgsub\
+xcopy /y KeePass.exe ..\PLGX\
 rem move /y "$(SolutionDir)obj" ..\
 ..\..\..\..\KeePass.exe --plgx-create "%25PLGXDIR%25"
 rem move /y ../obj "$(SolutionDir)"

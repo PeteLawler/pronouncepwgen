@@ -272,7 +272,7 @@ namespace PronouncePwGen
                 // substitutions - implemented outside of the core generation engine
                 if (profile.SubstitutionMode != CharacterSubstitutionMode.NoSubstitution && profile.SubstitutionScheme.Length > 0)
                 {
-                    string profilepath = Directory.GetCurrentDirectory() + "\\" + profile.SubstitutionScheme + ".ppgsub";
+                    string profilepath = Directory.GetCurrentDirectory() + "\\ppgsub\\" + profile.SubstitutionScheme + ".ppgsub";
                     if (File.Exists(profilepath))
                     {
                         PronouncePwGenSubstitutionProfile subprofile = new PronouncePwGenSubstitutionProfile(profilepath);

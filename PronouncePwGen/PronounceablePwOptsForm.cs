@@ -57,7 +57,7 @@ namespace PronouncePwGen
             cmbSubsScheme.Items.Clear();
             cmbSubsScheme.Items.Add("No substitution");
             cmbSubsScheme.SelectedIndex = 0;
-            DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory());
+            DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\ppgsub");
             FileInfo[] fis = di.GetFiles("*.ppgsub", SearchOption.AllDirectories);
             foreach (FileInfo fi in fis)
             {
