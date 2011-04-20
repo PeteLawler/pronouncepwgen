@@ -1,0 +1,19 @@
+v1.0.4
+- Added an option to include tweak(s) to the password generation algorithm which makes resulting passwords more pronounceable
+- Added new case options
+- Allows use of symbols/punctuations instead of or in conjuction with the Use Digits option.
+- Allows the application of substitution schemes to the resulting passwords
+- Fixed a bug which ends up hiding the options window when Always On Top is enabled on the main KeePass window
+
+v1.0.3
+- First official release
+- PLGX plugin format support
+
+v1.0.2
+- New look for the options menu
+
+v1.0.1
+- Bugfix release
+
+v1.0.0
+- First private release

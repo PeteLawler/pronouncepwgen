@@ -29,6 +29,8 @@ using KeePass.Plugins;
 
 using KeePassLib;
 using KeePassLib.Cryptography.PasswordGenerator;
+using System.Collections;
+using System.IO;
 
 namespace PronouncePwGen
 {
@@ -106,7 +108,7 @@ namespace PronouncePwGen
                     {
                         modestr = optionstr.Substring(0, 1);
                         digitstr = optionstr.Substring(1, 1);
-                        //lenstr = optionstr.Substring(2); // no longer load the length from v1 options
+                        lenstr = optionstr.Substring(2);
                     }
                     else // new format
                     {
@@ -187,8 +189,6 @@ namespace PronouncePwGen
                             throw new ApplicationException();
                     }
 
-                    symbols = symbolstr;
-
                     switch (substr)
                     {
                         case "": // leave as default
@@ -199,12 +199,14 @@ namespace PronouncePwGen
                         case "1":
                             submode = CharacterSubstitutionMode.RandomSubstitution;
                             break;
-                        case "3":
+                        case "2":
                             submode = CharacterSubstitutionMode.SubstituteAll;
                             break;
                         default:
                             throw new ApplicationException();
                     }
+
+                    symbols = symbolstr;
                 }
                 catch (ApplicationException) { }
                 catch (ArgumentOutOfRangeException) { }
@@ -265,7 +267,18 @@ namespace PronouncePwGen
             string gen = "";
             try
             {
-                gen = PronounceablePassword.Generate(crsRandomSource, profile.MinimumLength, profile.UseDigits, profile.CaseMode, profile.MorePronounceable);
+                gen = PronounceablePassword.Generate(crsRandomSource, profile.MinimumLength, profile.UseDigits, profile.UseSymbols, profile.CaseMode, profile.MorePronounceable);
+
+                // substitutions - implemented outside of the core generation engine
+                if (profile.SubstitutionMode != CharacterSubstitutionMode.NoSubstitution && profile.SubstitutionScheme.Length > 0)
+                {
+                    string profilepath = Directory.GetCurrentDirectory() + "\\" + profile.SubstitutionScheme + ".ppgsub";
+                    if (File.Exists(profilepath))
+                    {
+                        PronouncePwGenSubstitutionProfile subprofile = new PronouncePwGenSubstitutionProfile(profilepath);
+                        gen = subprofile.Substitute(gen, profile.SubstitutionMode == CharacterSubstitutionMode.RandomSubstitution ? crsRandomSource : null);
+                    }
+                }
             }
             catch (DivideByZeroException) { }
             return new KeePassLib.Security.ProtectedString(false, gen);

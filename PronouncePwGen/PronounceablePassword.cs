@@ -180,6 +180,50 @@ namespace PronouncePwGen
         }
         #endregion
 
+        #region Symbol class
+        private class Symbol : Unit
+        {
+            /// <summary>
+            /// Generates a random symbol.
+            /// </summary>
+            public Symbol(PRNG prng, string validsymbols)
+            {
+                Text = validsymbols[prng.Next(validsymbols.Length)].ToString();
+                Flags = UnitFlags.IS_A_DIGIT; // treated like digits
+            }
+
+        
+            /// <summary>
+            /// Creates a unit representing the specified symbol.
+            /// </summary>
+            /// <param name="number">The number to be represented as a digit.</param>
+            public Symbol(char symbol)
+            {
+                Text = symbol.ToString();
+                Flags = UnitFlags.IS_A_DIGIT;
+            }
+
+            /// <summary>
+            /// Creates a unit representing the specified symbol.
+            /// </summary>
+            /// <param name="number">The number to be represented as a digit.</param>
+            protected Symbol(string symbol)
+            {
+                Text = symbol;
+                Flags = UnitFlags.IS_A_DIGIT;
+            }
+
+            /// <summary>
+            /// Performs a deep copy of the Digit.
+            /// </summary>
+            /// <returns>Returns a deep copy of the Digit.</returns>
+            public new Symbol Copy()
+            {
+                return new Symbol(this.Text);
+            }
+}
+        #endregion
+
         #region Unit class
         /// <summary>
         /// Represents a single unit
@@ -1091,14 +1135,14 @@ namespace PronouncePwGen
         #endregion
 
         #region Generator functions
-        public static string Generate(KeePassLib.Cryptography.CryptoRandomStream stream, int minlength, bool digits, CaseMode mode, bool morepronounceable)
+        public static string Generate(KeePassLib.Cryptography.CryptoRandomStream stream, int minlength, bool digits, string symbols, CaseMode mode, bool morepronounceable)
         {
             bool hyphened = false; // not implemented here
 
             PRNG prng = new PRNG(stream);
             Word randomword = new Word();
 
-            if (digits)
+            if (digits || (symbols.Length > 0))
             {
                 minlength--;
                 hyphened = false;
@@ -1110,7 +1154,13 @@ namespace PronouncePwGen
             Syllable prevsyllable = null;
             while (randomword.Text.Length < minlength)
             {
-                if (randomword.Text.Length > 0 && digits && (prng.Next(0, minlength - randomword.Text.Length) != 0)) randomword.Add(new Syllable(new Digit(prng)));
+                if (randomword.Text.Length > 0 && (digits || (symbols.Length > 0)) && (prng.Next(0, minlength - randomword.Text.Length) != 0))
+                {
+                    if (digits && (symbols.Length == 0)) randomword.Add(new Syllable(new Digit(prng)));
+                    else if (!digits && (symbols.Length > 0)) randomword.Add(new Syllable(new Symbol(prng, symbols)));
+                    else if (prng.Next(2) == 1) randomword.Add(new Syllable(new Digit(prng)));
+                    else randomword.Add(new Syllable(new Symbol(prng, symbols)));
+                }
                 Unit prevunit1 = null;
                 Unit prevunit2 = null;
                 if (prevsyllable != null && prevsyllable.Count > 0)
@@ -1122,7 +1172,13 @@ namespace PronouncePwGen
                 prevsyllable = newsyllable;
                 randomword.Add(newsyllable);
             }
-            if (digits) randomword.Add(new Syllable(new Digit(prng)));
+            if (digits && (symbols.Length == 0)) randomword.Add(new Syllable(new Digit(prng)));
+            else if (!digits && (symbols.Length > 0)) randomword.Add(new Syllable(new Symbol(prng, symbols)));
+            else if (digits && (symbols.Length > 0))
+            {
+                if (prng.Next(2) == 1) randomword.Add(new Syllable(new Digit(prng)));
+                else randomword.Add(new Syllable(new Symbol(prng, symbols)));
+            }
 
             switch (mode)
             {
@@ -1149,5 +1205,84 @@ namespace PronouncePwGen
             return generated;
         }
         #endregion
+    }
+
+    public class PronouncePwGenSubstitutionProfile
+    {
+        Hashtable ProfileData = new Hashtable();
+
+        /// <summary>
+        /// PronouncePwGenSubstitutionProfile Constructor
+        /// </summary>
+        /// <param name="profilepath">File to load profile from</param>
+        public PronouncePwGenSubstitutionProfile(string profilepath)
+        {
+            this.LoadProfile(profilepath);
+        } 
+
+        /// <summary>
+        /// Load profile from file
+        /// </summary>
+        /// <param name="profilepath">File to load profile from</param>
+        public void LoadProfile(string profilepath)
+        {
+            using (StreamReader profilereader = new StreamReader(profilepath))
+            {
+                string line = profilereader.ReadLine();
+                while (line != null)
+                {
+                    if (line.Length > 1 && line[1] == '=')
+                    {
+                        char item = line[0];
+                        if (!ProfileData.ContainsKey(item)) ProfileData[item] = line.Remove(0, 2);
+
+                    }
+                    line = profilereader.ReadLine();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Perform substitution lookup on character
+        /// </summary>
+        /// <param name="item">Character to look up a substitution for</param>
+        /// <returns>substitute for item or item if substitution does not exist.</returns>
+        public string Lookup(char item)
+        {
+            if (ProfileData.ContainsKey(item)) return ProfileData[item].ToString();
+            else return item.ToString();
+        }
+
+        /// <summary>
+        /// Substitute all substituteable characters in subject string
+        /// </summary>
+        /// <param name="subject">Subject string</param>
+        public string Substitute(string subject)
+        {
+            return Substitute(subject, null);
+        }
+
+        /// <summary>
+        /// Substitutes a random set of substituteable characters in a subject string
+        /// </summary>
+        /// <param name="subject">Subject string</param>
+        /// <param name="prng">Random number generator</param>
+        public string Substitute(string subject, KeePassLib.Cryptography.CryptoRandomStream randomstream)
+        {
+            PRNG prng = null;
+            if (randomstream != null) prng = new PRNG(randomstream);
+
+            string result = "";
+            foreach (char item in subject.ToCharArray())
+            {
+                string sub = Lookup(item);
+                if (!item.ToString().Equals(sub) &&
+                    ((prng == null) ||
+                     (prng.Next(2)==1)))
+                    result += sub;
+                else result += item;
+            }
+            return result;
+        }
     }
 }

@@ -42,6 +42,7 @@ namespace PronouncePwGen
 
         private void PronounceablePwOptsForm_Load(object sender, EventArgs e)
         {
+            GlobalWindowManager.AddWindow(this);
             pbBannerImage.Image = BannerFactory.CreateBanner(pbBannerImage.Width, pbBannerImage.Height, BannerStyle.Default, Properties.Resource.B48x48_KGPG_Info, PronouncePwGenRes.HeaderText, PronouncePwGenRes.HeaderText2);
         }
 
@@ -60,8 +61,9 @@ namespace PronouncePwGen
             FileInfo[] fis = di.GetFiles("*.ppgsub", SearchOption.AllDirectories);
             foreach (FileInfo fi in fis)
             {
-                int i = cmbSubsScheme.Items.Add(fi.Name);
-                if (fi.Name == defaults.SubstitutionScheme) cmbSubsScheme.SelectedIndex = i;
+                string subfile = Path.GetFileNameWithoutExtension(fi.FullName);
+                int i = cmbSubsScheme.Items.Add(subfile);
+                if (subfile == defaults.SubstitutionScheme) cmbSubsScheme.SelectedIndex = i;
             }
             if (this.ShowDialog() != DialogResult.OK) return defaults;
 
@@ -73,6 +75,7 @@ namespace PronouncePwGen
             profile.UseSymbols = tbSymbols.Text;
             profile.MinimumLength = (int)nudLength.Value;
             profile.SubstitutionScheme = cmbSubsScheme.SelectedIndex > 0 ? (string)cmbSubsScheme.SelectedItem.ToString() : "";
+            if (profile.SubstitutionScheme.Length == 0) profile.SubstitutionMode = CharacterSubstitutionMode.NoSubstitution;
 
             return profile;
         }
@@ -81,6 +84,11 @@ namespace PronouncePwGen
         {
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private void PronounceablePwOptsForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            GlobalWindowManager.RemoveWindow(this);
         }
     }
 }

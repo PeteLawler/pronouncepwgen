@@ -117,24 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="textBox1.Text" xml:space="preserve">
+  <data name="label8.Text" xml:space="preserve">
+    <value>Use this option to generate more pronounceable passwords. Take note that enabling this option reduces the security of generated passwords.
+
+NOTE: The algorithm tweaks which make the passwords more pronounceable may change in future revisions of the plugin, the base algorithm, however, will remain unchanged.
+</value>
+  </data>
+  <data name="label9.Text" xml:space="preserve">
     <value>The upper and lower case options generate weaker but easier to remember passwords.
 
 The randomize case option generates stronger but harder to remember passwords.
 
-Capitalizing the first letter of syllables generate passwords almost as strong as a randomized case password but at the same time is almost as easy to remember as lower or upper case passwords.</value>
+Capitalizing the first letter of syllables generate passwords almost as strong as a randomized case password but at the same time is almost as easy to remember as lower or upper case passwords.
+</value>
   </data>
-  <data name="textBox4.Text" xml:space="preserve">
-    <value>The upper and lower case options generate weaker but easier to remember passwords.
+  <data name="label10.Text" xml:space="preserve">
+    <value>Subsutions allow you to change individual characters in the resulting password to something else. You can choose to substitute all substituteable characters or randomly pick which to subsitute by choosing the appropriate substitution type.  The chosen substitution scheme dictates which characters can be substituted and what to substitute in their place.
 
-The randomize case option generates stronger but harder to remember passwords.
-
-Capitalizing the first letter of syllables generate passwords almost as strong as a randomized case password but at the same time is almost as easy to remember as lower or upper case passwords.</value>
+Please view the Readme.txt file for instructions on how to create substitution schemes.
+</value>
   </data>
-  <data name="textBox2.Text" xml:space="preserve">
+  <data name="label11.Text" xml:space="preserve">
     <value>The plugin will always generate passwords at least as long as the specified minimum length. It will stop adding syllables as soon as it reaches or exceeds the minimum length.
 
-When the Use Digits option is checked and/or if symbols are placed in the Use Symbols text box, the plugin includes digits and/or the chosen symbols in between syllables and at the end of the password only.  This minimizes the impact of digits on memorizeability.</value>
+When the Use Digits option is checked and/or if symbols are placed in the Use Symbols text box, the plugin includes digits and/or the chosen symbols in between syllables and at the end of the password only.  Only 1 digit or 1 symbol is used in between syllables.  You can also uncheck the Use digits option and type in a single character in the Use Symbols box to provide a specific syllable separator.
+</value>
   </data>
   <data name="textBox5.Text" xml:space="preserve">
     <value>The upper and lower case options generate weaker but easier to remember passwords.

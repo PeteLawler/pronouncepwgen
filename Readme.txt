@@ -25,12 +25,35 @@ should appear in the custom algorithm drop down box.  Just select it and click
 on the options button beside the drop down box if you wish to change the
 password generation settings.
 
-CHANGES SINCE v1.0.2
+SUBSTITUTION SCHEMES
 
-There were no code changes since version v1.0.2. The v1.0.3 binary is merely
-v1.0.2 recompiled for KeePass 2.08. The previous binary worked only for a test
-version of KeePass.  Only the Readme.txt file (this file) was changed with a
-few minor changes, most of which is due to the KeePass 2.08 release.
+Substituiton schemes are defined by creating text files in the KeePass directory
+using an extension of .ppgsub.  Each substitution rule is defined like this:
+
+<character to replace>=<replacement text>
+
+Here are the rules for creating a substitution scheme:
+- One rule per line.
+- If multiple rules are defined to replace the same character, only the first
+  rule will be applied.  The rest will be ignored.
+- Only one character may be replaced at a time but the replacement text can have
+  more than 1 character.
+- No spaces must be included before the = symbol or before the character to be
+  replaced.
+- Any spaces immediately after the = symbol and trailing the line will be
+  treated as part of the replacement text.
+- An empty replacement can also be used to explicitly remove specific characters
+  from the password, however, doing this for letters will likely reduce
+  pronounceability.
+- All invalid lines will be ignored without error messages.  This effect can be
+  taken advantage of to include comments in the substitution scheme file.
+- The defined character to replace is not case sensitive, however, the
+  replacement will be applied after the case randomization options and will
+  therefore be included as is without any case modifications.  This effect,
+  allows you to create substitution schemes to capitalize specific letters in
+  the resulting password.
+
+CHANGES (moved to Changes.txt)
 
 CREDITS
 
