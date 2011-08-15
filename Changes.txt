@@ -1,3 +1,8 @@
+v1.0.4b
+- Fixed issues with the substitution file directory
+- Allowed the use of %APPDATA%\KeePass\ppgsub for substitution files
+- UNSUPPORTED: When running mono on linux-like machines, the plugin will look for substitution files under ~/.pronouncepwgen/ instead of %APPDATA%\KeePass\ppgsub.  The plugin will still look for substitution files in the ppgsub directory where the application executable is located.
+
 v1.0.4
 - Added an option to include tweak(s) to the password generation algorithm which makes resulting passwords more pronounceable
 - Added new case options

@@ -11,7 +11,8 @@ either project will be reflected on both.  You can find pwgenlib.net here:
 
 REQUIREMENTS
 
-This plugin requires KeePass 2.08 available at <http://keepass.info/>.
+This plugin requires KeePass version 2.08 or later.  It is available at
+http://keepass.info/.
 
 INSTALLING
 
@@ -27,8 +28,12 @@ password generation settings.
 
 SUBSTITUTION SCHEMES
 
-Substituiton schemes are defined by creating text files in <path to keepass>\ppgusb
-using an extension of .ppgsub.  Each substitution rule is defined like this:
+Substituiton schemes are defined by creating text files in the ppgsub directory
+in the KeePass application directory or the KeePass user data directory using an
+extension of .ppgsub.  Files in the ppgsub files under the user data directory
+will override ppgsub files under the KeePass application directory.
+
+Each substitution rule is defined like this:
 
 <character to replace>=<replacement text>
 

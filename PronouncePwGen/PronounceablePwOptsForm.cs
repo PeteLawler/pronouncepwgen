@@ -57,14 +57,41 @@ namespace PronouncePwGen
             cmbSubsScheme.Items.Clear();
             cmbSubsScheme.Items.Add("No substitution");
             cmbSubsScheme.SelectedIndex = 0;
-            DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory() + "\\ppgsub");
-            FileInfo[] fis = di.GetFiles("*.ppgsub", SearchOption.AllDirectories);
-            foreach (FileInfo fi in fis)
+
+            DirectoryInfo userdatadir = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\KeePass\\ppgsub");
+            DirectoryInfo appdatadir = new DirectoryInfo(Path.GetDirectoryName(Application.ExecutablePath) + "\\ppgsub");
+            if (Environment.OSVersion.Platform == PlatformID.Unix ||
+                (int)Environment.OSVersion.Platform == 128 || // Old Mono CLR
+                Environment.OSVersion.Platform == PlatformID.MacOSX) // not sure if the plugin actually works on MacOSX or if ~/ is even valid but might as well
             {
-                string subfile = Path.GetFileNameWithoutExtension(fi.FullName);
-                int i = cmbSubsScheme.Items.Add(subfile);
-                if (subfile == defaults.SubstitutionScheme) cmbSubsScheme.SelectedIndex = i;
+                userdatadir = new DirectoryInfo("~/.pronouncepwgen");
             }
+
+            if (userdatadir.Exists)
+            {
+                FileInfo[] userfiles = userdatadir.GetFiles("*.ppgsub", SearchOption.TopDirectoryOnly);
+                foreach (FileInfo file in userfiles)
+                {
+                    string subfile = Path.GetFileNameWithoutExtension(file.FullName);
+                    int i = cmbSubsScheme.Items.Add(subfile);
+                    if (subfile == defaults.SubstitutionScheme) cmbSubsScheme.SelectedIndex = i;
+                }
+            }
+
+            if (appdatadir.Exists)
+            {
+                FileInfo[] appfiles = appdatadir.GetFiles("*.ppgsub", SearchOption.TopDirectoryOnly);
+                foreach (FileInfo file in appfiles)
+                {
+                    string subfile = Path.GetFileNameWithoutExtension(file.FullName);
+                    if (!cmbSubsScheme.Items.Contains(subfile))
+                    {
+                        int i = cmbSubsScheme.Items.Add(subfile);
+                        if (subfile == defaults.SubstitutionScheme) cmbSubsScheme.SelectedIndex = i;
+                    }
+                }
+            }
+
             if (this.ShowDialog() != DialogResult.OK) return defaults;
 
             ProunouncePwGenProfile profile = new ProunouncePwGenProfile();

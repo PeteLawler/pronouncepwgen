@@ -1233,7 +1233,7 @@ namespace PronouncePwGen
                 {
                     if (line.Length > 1 && line[1] == '=')
                     {
-                        char item = line[0];
+                        char item = char.ToLower(line[0]);
                         if (!ProfileData.ContainsKey(item)) ProfileData[item] = line.Remove(0, 2);
 
                     }
@@ -1249,7 +1249,7 @@ namespace PronouncePwGen
         /// <returns>substitute for item or item if substitution does not exist.</returns>
         public string Lookup(char item)
         {
-            if (ProfileData.ContainsKey(item)) return ProfileData[item].ToString();
+            if (ProfileData.ContainsKey(char.ToLower(item))) return ProfileData[char.ToLower(item)].ToString();
             else return item.ToString();
         }
 

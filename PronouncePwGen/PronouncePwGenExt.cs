@@ -31,6 +31,7 @@ using KeePassLib;
 using KeePassLib.Cryptography.PasswordGenerator;
 using System.Collections;
 using System.IO;
+using System.Windows.Forms;
 
 namespace PronouncePwGen
 {
@@ -272,8 +273,31 @@ namespace PronouncePwGen
                 // substitutions - implemented outside of the core generation engine
                 if (profile.SubstitutionMode != CharacterSubstitutionMode.NoSubstitution && profile.SubstitutionScheme.Length > 0)
                 {
-                    string profilepath = Directory.GetCurrentDirectory() + "\\ppgsub\\" + profile.SubstitutionScheme + ".ppgsub";
-                    if (File.Exists(profilepath))
+                    DirectoryInfo userdatadir = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\KeePass\\ppgsub");
+                    DirectoryInfo appdatadir = new DirectoryInfo(Path.GetDirectoryName(Application.ExecutablePath) + "\\ppgsub");
+                    if (Environment.OSVersion.Platform == PlatformID.Unix ||
+                        (int)Environment.OSVersion.Platform == 128 || // Old Mono CLR
+                        Environment.OSVersion.Platform == PlatformID.MacOSX) // not sure if the plugin actually works on MacOSX or if ~/ is even valid but might as well
+                    {
+                        userdatadir = new DirectoryInfo("~/.pronouncepwgen");
+                    }
+
+                    string profilepath = string.Empty;
+                    if (userdatadir.Exists)
+                    {
+                        FileInfo[] userfiles = userdatadir.GetFiles(profile.SubstitutionScheme + ".ppgsub", SearchOption.TopDirectoryOnly);
+                        if (userfiles.Length > 0)
+                            profilepath = userfiles[0].FullName;
+                    }
+
+                    if (profilepath == string.Empty && appdatadir.Exists)
+                    {
+                        FileInfo[] userfiles = appdatadir.GetFiles(profile.SubstitutionScheme + ".ppgsub", SearchOption.TopDirectoryOnly);
+                        if (userfiles.Length > 0)
+                            profilepath = userfiles[0].FullName;
+                    }
+
+                    if (profilepath != string.Empty)
                     {
                         PronouncePwGenSubstitutionProfile subprofile = new PronouncePwGenSubstitutionProfile(profilepath);
                         gen = subprofile.Substitute(gen, profile.SubstitutionMode == CharacterSubstitutionMode.RandomSubstitution ? crsRandomSource : null);
