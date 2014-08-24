@@ -2,4 +2,5 @@ glob:obj/*
 glob:KeePass.exe
 glob:PronouncePwGen.plgx
 glob:Build/*
-glob:PronouncePwGen/KeePass Pronounceable Password Generator Plugin.suo
+syntax: glob
+*.suo
